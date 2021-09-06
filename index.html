@@ -1,0 +1,281 @@
+<!DOCTYPE html><html><head>
+    <title>Nginx hosting</title>
+    <meta charset="utf-8">
+  </head><body>
+    <h1>NGINX HOSTING</h1>
+      Lưu ý: Nếu không sử dụng Nginx mà sử dụng Apache, bài thực hành thay thế là  <a href="https://itest.com.vn/lects/webappdev/hosting/apache-hosting.htm">Apache Hosting</a>
+    <h2>1. Giới thiệu</h2>
+    <p><a href="https://www.nginx.com/">Nginx</a> là một web server mới nổi và được ưa chuộng. Hiện tại, nó chỉ đứng sau Apache về mức độ phổ biến nhưng trong tương lai gần có thể vượt qua Apache.
+     Ưu điểm của Nginx là có tốc độ xử lý/hiệu năng cao hơn các web server khác.
+     Hạn chế của Nginx là còn ít môđun xử lý đi kèm (do còn mới; tương lai có thể được bổ sung).
+    </p>
+    <p>
+       Từ khi Nginx ra đời, những người thực hành  web có thêm một lựa chọn mới là LEMP (Linux, Nginx, MySQL, PHP), bên cạnh LAMP (Linux, Apache, MySQL, PHP) lâu đời và nổi tiếng.
+    </p>
+    <p>
+      Bài thực hành này hướng dẫn cài đặt LEMP trên Ubuntu.
+    </p>
+    <h2>2. Cài đặt Nginx</h2>
+    <img src="https://itest.com.vn/lects/webappdev/hosting/a.png" style="float:right;width:600px">
+    - Cập nhật Ubuntu<br>
+    <code>
+        sudo apt update <br>
+        sudo apt upgrade
+    </code>
+    <br>
+    - Gỡ bỏ Apache (nếu có) <br>
+    <code>
+      sudo systemctl stop apache2 <br>
+      sudo apt remove --purge apache2
+    </code>
+    <br>
+    - Cài đặt Nginx <br>
+    <code>
+        sudo apt install nginx
+    </code>
+    <br>
+    - Khởi động nginx <br>
+    <code>
+      sudo systemctl start nginx <br>
+      sudo systemctl enable nginx
+    </code>
+    <br>
+    - Kiểm tra trạng thái nginx (trạng thái mong muốn là Active: active (running))<br>
+    <code>
+      systemctl status nginx
+    </code>
+    <br> hoặc sử dụng trình duyệt vào trang http://127.0.0.1
+  
+  
+    <h2>3. Cài đặt PHP</h2>
+    Nginx giao tiếp với PHP Interpreter thông qua CGI, khác với Apache giao tiếp với mod_php qua API.
+    <br>
+    - Cài đặt các gói PHP <br>
+    <code>
+      sudo apt install php-fpm php-mysql
+    </code>
+    <br><img src="https://itest.com.vn/lects/webappdev/hosting/b.png" style="float:right;width:600px">
+    - Mở tệp cấu hình PHP tại <i>/etc/php/7.2/cli/php.ini</i> (thay 7.2 bằng số hiệu phiên bản PHP trên máy), tìm dòng có nội dung <br>
+    <code>;cgi.fix_pathinfo=1</code><br>
+    và thay bằng <br>
+    <code>cgi.fix_pathinfo=0</code> <br> rồi lưu tệp cấu hình. <br>
+  
+    - Khởi động lại PHP-FPM (thay 7.2 bằng số hiệu phiên bản PHP trên máy)<br>
+    <code>
+      sudo systemctl restart php7.2-fpm
+    </code><br>
+  
+  - Cấu hình nginx để nó giao tiếp với PHP-FPM<br>
+  Mở tệp <i>/etc/nginx/sites-available/default</i>, cấu hình khối <i>location ~ \.php$</i> như sau: <br>
+  <code>
+    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000 <br>
+          #<br>
+          location ~ \.php$ {<br>
+                  include snippets/fastcgi-php.conf;<br>
+                  fastcgi_pass unix:/run/php/php7.2-fpm.sock;<br>
+          }
+  </code> <br>
+  
+  - Bổ sung index.php vào danh sách tài nguyên mặc định<br>
+  Trong tệp <i>/etc/nginx/sites-available/default</i>, tìm dòng "index ..." và bổ sung index.php vào cuối danh sách như ví dụ sau:<br>
+  <code>
+  # Add index.php to the list if you are using PHP<br>
+  index index.html index.htm index.nginx-debian.html index.php;
+  </code>
+  <br>
+  - Khởi động lại nginx<br>
+  <code>
+    sudo systemctl restart nginx
+  </code>
+  <br>
+  
+  
+  - Kiểm tra nginx đã làm việc với PHP bằng cách<br>
+  tạo tệp <i>/var/www/html/index.php</i> với nội dung như sau: <br>
+  <code>
+  &lt;?php <br>
+  phpinfo();
+  </code> <br>
+  rồi mở trình duyệt vào trang http://127.0.0.1
+  
+  
+  <h2>4. Cài đặt MySQL</h2>
+  - Cài đặt MySQL <br>
+  <code>
+    sudo apt install mysql-server
+  </code> <br>
+  - Khởi động MySQL <br>
+  <code>
+      sudo systemctl start mysql <br>
+      sudo systemctl enable mysql
+  </code>
+  
+  
+  <h2>5. Cài đặt phpMyAdmin</h2>
+  phpMyAdmin là MySQL client được viết bằng PHP. Truy cập phpMyAdmin bằng trình duyệt nên thuận tiện cho quản trị CSDL.<br>
+  - Cài đặt phpMyAdmin <br>
+  <code>
+    sudo apt install phpmyadmin
+  </code> <br>
+  - Tạo symlink cho truy cập phpMyAdmin <br>
+  <code>
+    sudo ln -s /usr/share/phpmyadmin /var/www/html
+  </code><br>
+  - Khởi động lại Nginx<br>
+  <code>
+      sudo systemctl restart nginx
+  </code><br>
+  - Truy cập phpMyAdmin từ trình duyệt theo địa chỉ <i> http://127.0.0.1/phpmyadmin</i><br>
+  với tên đăng nhập là "phpmyadmin" hoặc "root" và mật khẩu là mật khẩu đã thiết lập lúc cài đặt phpMyAdmin.
+  <!--
+  <br>
+  <br>Nếu quên mật khẩu mysql thì thực hiện các bước sau để khôi phục mật khẩu:
+  <pre>
+  sudo systemctl stop mysql
+  sudo mkdir /var/run/mysqld
+  sudo chown mysql: /var/run/mysqld
+  sudo mysqld_safe --skip-grant-tables --skip-networking &
+  mysql -u root
+
+  Trong cửa sổ mysql> client:
+  
+  FLUSH PRIVILEGES;
+  ALTER USER 'root'@'localhost' IDENTIFIED BY 'new_password';
+  SET PASSWORD FOR 'root'@'localhost' = PASSWORD('new_password');
+  UPDATE mysql.user SET authentication_string = PASSWORD('new_password') WHERE User = 'root' AND Host = 'localhost';
+  exit;
+  
+  Tiếp tục trong Terminal:
+  sudo kill `sudo cat /var/run/mysqld/mysqld.pid`
+  sudo systemctl start mysql
+  </pre>
+  -->
+  <h2>6. Hosting ứng dụng web</h2>
+  Giả sử yêu cầu hosting hai ứng dụng web với địa chỉ truy cập lần lượt là<br>
+  - Bản tin: bulletin.any.com.vn<br>
+  - Quản lý nhân sự: hrm.any.com.vn<br>
+  <p>
+  <h3>Chuẩn bị</h3>
+    Để kiểm thử được kết quả cài đặt, cụ thể là sử dụng tên miền để truy cập ứng dụng web, hãy mở tệp hosts, đưa ba tên miền ở trên vào tệp này và cùng ánh xạ đến local IP.<br>
+  Trong Terminal, chạy lệnh sau để mở tệp hosts<br>
+  <code>
+  sudo nano /etc/hosts
+  </code><br>
+  Thêm các dòng sau vào cuối tệp hosts<br>
+  <code>
+  127.0.0.1 bulletin.any.com.vn<br>
+  127.0.0.1 hrm.any.com.vn
+  </code><br>
+  Lưu tệp và đóng nano.
+  </p>
+  <h3>Tạo thư mục gốc cho ứng dụng</h3>
+  Trong Terminal, chạy các lệnh sau để tạo hai thư mục gốc cho hai ứng dụng Bulletin và HRM:<br>
+  <code>
+      sudo mkdir -p /var/www/bulletin.any.com.vn<br>
+      sudo mkdir -p /var/www/hrm.any.com.vn
+  </code>
+  <br>
+  <h3>Phân quyền trên thư mục ứng dụng</h3>
+  Tiếp theo, chạy các lệnh sau để phân quyền cho các thư mục gốc đã tạo: <br>
+  <code>
+  sudo chown -R $USER:$USER  /var/www/bulletin.any.com.vn<br>
+  sudo chown -R $USER:$USER  /var/www/hrm.any.com.vn<br>
+  sudo chmod -R 755 /var/www/bulletin.any.com.vn<br>
+  sudo chmod -R 755 /var/www/hrm.any.com.vn<br>
+  </code>
+  
+  <br>
+  <h3>Tạo các trang web ví dụ</h3>
+  Chạy lệnh sau để tạo trang web thứ nhất cho ứng dụng Bulletin: <br>
+  <code>
+  sudo nano /var/www/bulletin.any.com.vn/index.htm<br>
+  </code>
+  <br>Nhập nội dung trang index.htm của ứng dụng Bulletin như sau:<br>
+  <code>
+      &lt;!DOCTYPE html&gt; <br>
+      &lt;html&gt;<br>
+      &lt;head&gt;<br>
+          &lt;title>Welcome to Bulletin!&lt;/title&gt;<br>
+      &lt;/head&gt;<br>
+      &lt;body&gt;<br>
+          &lt;h1>Success!  The Bulletin block is working!&lt;/h1&gt;<br>
+      &lt;body&gt;<br>
+      &lt;/html&gt;<br>
+  </code>
+  <br>
+  
+  Tiếp theo, chạy lệnh sau để tạo trang web thứ hai cho ưng dụng Bulletin:<br>
+  <code>
+  sudo nano /var/www/bulletin.any.com.vn/test.php<br>
+  </code>
+  <br>Nhập nội dung trang test.php của ứng dụng Bulletin như sau:<br>
+  <code>
+      &lt;?php<br>
+          echo "Hello Bulletin!";<br>
+  </code>
+  <br>
+  
+  
+  
+  
+  Thực hiện tương tự các bước trên để tạo trang index.htm và test.php cho ứng dụng HRM.<br>
+  <br>
+  
+  <h3>Tạo Server Block cho các ứng dụng</h3>
+  Chạy lệnh sau để tạo server block cho ứng dụng Bulletin:<br>
+  <code>
+      sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/bulletin.any.com.vn
+  </code>
+  <br>
+  Tiếp theo, chạy lệnh sau để mở cấu hình cho ứng dụng Bulletin: <br>
+  <code>
+      sudo nano /etc/nginx/sites-available/bulletin.any.com.vn
+  </code>
+  <br> và nhập nội dung như sau:
+  
+  <pre>
+  
+  server {
+      listen 80;
+      listen [::]:80;
+  
+      root /var/www/bulletin.any.com.vn;
+  
+      index index.html index.htm index.php;
+  
+      server_name bulletin.any.com.vn;
+  
+      location / {
+          try_files $uri $uri/ =404;
+          autoindex on;
+      }
+  
+  
+      location ~ \.php$ {
+          include snippets/fastcgi-php.conf;
+          fastcgi_pass unix:/run/php/php7.2-fpm.sock;
+      }
+  }
+  </pre><br>
+  
+  Thực hiện tương tự các bước trên để tạo server block cho ứng dụng HRM.<br>
+  
+  <br>
+  
+  <h3>Bật các server block và khởi động lại Nginx</h3>
+  Chạy các lệnh sau:<br>
+  <code>
+  sudo ln -s /etc/nginx/sites-available/bulletin.any.com.vn /etc/nginx/sites-enabled/<br>
+  sudo ln -s /etc/nginx/sites-available/hrm.any.com.vn /etc/nginx/sites-enabled/<br>
+  sudo systemctl restart nginx<br>
+  </code><br>
+  
+  <h3>Kiểm tra các ứng dụng đã chạy</h3>
+  Mở trình duyệt vào các trang sau:<br>
+  <code>
+      http://bulletin.any.com.vn <br>
+      http://bulletin.any.com.vn/test.php<br>
+      http://hrm.any.com.vn
+  </code>
+  </body></html>
+  
