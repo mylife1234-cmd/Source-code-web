@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" charset="utf-8">
+		<link rel="Stylesheet" href="19021230.css" type="text/css">
+    </head>
+    <body>
+        <form id ="form">
+            <div>
+                <label class = "info">Họ tên:</label>
+                <input type="text" id = "name" name = "name" class = "requirement">
+                <br>
+            </div>
+            <div>
+                <label class ="info">Địa chỉ:</label>
+                <input type="text" id = "address" name = "address">
+                <br>
+            </div>
+            <div>
+                <label class ="info">Giới tính:</label>
+                <label class="gioitinh">
+                    <input type="radio" id="nam" name="gioitinh" checked="checked"/> Nam
+                </label>
+                <label class="gioitinh">
+                    <input type="radio" id="nu" name="gioitinh"/> Nữ
+                </label>
+                <br>
+            </div>
+            <div>
+                <label class="info">Ngày sinh:</label>
+                <input type = "text" id = "birthday" name = "birthday" placeholder="nn/tt/nnnn" class = "requirement">
+                <br>
+            </div>
+            <div>
+                <label class ="info">Email:</label>
+                <input type="text" id = "email" name = "email" class="requirement">
+                <br>
+            </div>
+            <div>
+                <label class ="info">Điện thoại:</label>
+                <input type="text" id = "phonenumber" name = "phonenumber">
+                <br>
+            </div>
+            <div>
+                <label class ="info">Khoá đăng kí:</label>
+                <label class="courseregister">
+                    <input type="checkbox" id = "english" name = "english"> Tiếng Anh
+                    <span class="checkmark"></span>
+                </label>
+                <label class="courseregister">
+                    <input type="checkbox" id = "management" name = "management"> Quản trị
+                    <span class="checkmark"></span>
+                </label>
+                <label class="courseregister">
+                    <input type="checkbox" id = "technology" name = "technology"> CNTT
+                    <span class="checkmark"></span>
+                </label>
+                <br>
+            </div>
+            <div>
+                <label class = "info">Tên sử dụng:</label>
+                <input type="text" id = "username" name = "username" class = "requirement">
+                <br>
+            </div>
+            <div>
+                <label class ="info">Mật khẩu:</label>
+                <input type="text" id = "password" name = "password">
+                <br>
+            </div>
+            <div>
+                <label class ="info">Gõ lại mật khẩu:</label>
+                <input type="text" id = "repassword" name = "repassword">
+                <br>
+            </div>
+            <div>
+                <label class ="info">Ghi chú:</label>
+                <textarea type="file" id="note" name="note" accept=".png,.jpg"></textarea>
+                <br>
+            </div>
+            <div>
+                <label for="info">Ảnh chân dung:</label>
+                <input type="file" id="image" name="image" accept=".png,.jpg">\
+                <br/>
+            </div>
+            <div>
+                <label class="HangMoi">&nbsp;</label>
+                <input type="button" onclick = "javascript:Chapnhan();" value="Chấp nhận"/>
+                <input type="button" onclick = "javascript:Boqua();" value="Bỏ qua"/>
+                <br/>
+              </div>
+        </form>
+    </body>
+</html>

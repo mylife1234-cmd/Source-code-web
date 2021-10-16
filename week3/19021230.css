@@ -1,0 +1,33 @@
+form div {margin-top:5px;}
+
+/* Nháº­p text/password */
+form input[type=text], form input[type=password], form textarea {
+  padding: 5px;
+  border: 1px solid grey;
+  width: 250px;
+  background: #f1f1f1;
+}
+form input[type=text]:hover, form input[type=password]:hover, form textarea:hover {
+  background: #e1e1e1;
+}
+form input[type=text].requirement { background-color: #00ffff;}
+form input[type=text].requirement:hover { background-color: #00dddd;}
+
+/* NÃºt báº¥m */
+form input[type=button] {
+  padding: 10px;
+  background: #2196F3;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+form input[type=button]:hover {
+  background: #0b7dda;
+}
+
+/* NhÃ£n vÃ  span bÃ¡o lá»—i */
+form label.HangMoi {float: left; width: 120px;}
+form span.Baoloi { color: #ff0000;}
+
+/* Cáº¯t trÃ´i sau má»—i hÃ ng */
+form br {clear:both;}

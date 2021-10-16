@@ -135,3 +135,5 @@ fruits = ("apple", "banana", "cherry", "strawberry", "raspberry")
 print(green)
 print(yellow)
 print(red)
+
+a = [1,2,3,4,5,6]
